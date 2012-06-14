@@ -9,15 +9,26 @@ BEGIN {
 use 5.006;
 use warnings;
 use strict;
+
 use Thrift;
+#use Net::SSL;
 use Thrift::HttpClient;
-use Thrift::XS::BinaryProtocol;
+use Thrift::BinaryProtocol;
 
 use EDAMUserStore::UserStore;
 use EDAMUserStore::Types;
+use EDAMUserStore::Constants;
+
+
 use EDAMNoteStore::NoteStore;
 use EDAMNoteStore::Types;
+
 use EDAMErrors::Types;
+use EDAMErrors::Constants;
+
+use EDAMLimits::Constants;
+use EDAMLimits::Types;
+
 use EDAMLimits::Types;  
 use EDAMTypes::Types;
 
@@ -27,21 +38,42 @@ sub new {
     my $class = shift;
     my $username = shift;
     my $password = shift;
-    my $consumerKey = shift;
-    my $consumerSecret = shift;
-    my $authUrl = shift || "https://sandbox.evernote.com/edam/user";
+    my $consumer_key = shift;
+    my $consumer_secret = shift;
+    my $auth_url = shift || "https://sandbox.evernote.com/edam/user";
+    # would like to not have to do this if possible
+    $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
+    
+    print "Auth URL: $auth_url\n" if $ENV{'DEBUG'};
 
-    my $transport = Thrift::HttpClient->new($authUrl);
-    my $protocol  = Thrift::XS::BinaryProtocol->new($transport);
-    my $client    = EDAMUserStore::UserStoreClient->new($protocol);
+    $DB::single = 1;
 
-    $transport->open;
+    my $user_http_client = new Thrift::HttpClient($auth_url);
+    my $user_protocol = new Thrift::BinaryProtocol($user_http_client);
+    
+    my $userStore = EDAMUserStore::UserStoreClient->new($user_protocol);
+    
+    $DB::single = 1;
 
-    my $re = $client->authenticate($username,$password,$consumerKey,$consumerSecret);
+    my $result;
+
+    eval {
+      $result = $userStore->authenticate($username, $password, $consumer_key, $consumer_secret);
+    };
+
+    if ($@) {
+        my $err = $@;
+        $DB::single = 1;
+        die "Code: " . $$err{'code'} . ', ' . $$err{'message'};
+    }
+
+    my $auth = $result->{authenticationToken};
+    
+    my $user_full_name = $result->{user}->{name};
 
     bless { 
-            authToken => $re->authenticationToken,
-            shardId   => $re->user->shardId,
+            #authToken => $re->authenticationToken,
+            #shardId   => $re->user->shardId,
           }, $class;
 }
 
@@ -138,12 +170,11 @@ sub findNotes {
     $client->findNotes($authToken,$stru,$offset,$maxNotes);
 }
 
-
 1;
 
 =head1 NAME
 
-Net::Evernote - Perl client accessing to Evernote
+Net::Evernote - Perl client for Evernote
 
 
 =head1 VERSION
