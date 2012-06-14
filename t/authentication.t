@@ -1,35 +1,20 @@
 use strict;
 use warnings;
-
+use Test::More qw(no_plan);
+use FindBin;
+use lib $FindBin::Bin;
 use Net::Evernote;
-use Common qw(:DEFAULT $config);;
 
+use Common qw(:DEFAULT $config);
 
-my $note = Net::Evernote->new(
+BEGIN { use_ok('Net::Evernote') };
+
+my $evernote = Net::Evernote->new(
     $$config{'username'},
     $$config{'password'},
     $$config{'consumer_key'},
     $$config{'consumer_secret'}
 );
 
-my $title = "test title from Perl Api";
-my $content = "here is some test content";
+ok($evernote->userId, "User authenticated")
 
-# write a note
-my $res = $note->writeNote($title, $content);
-my $guid = $res->guid;
-
-# get the note
-my $thisNote = $note->getNote($guid);
-print $thisNote->title,"\n";
-print $thisNote->content,"\n";
-
-# delete the note
-$note->delNote($guid);
-
-# find notes
-my $search = $note->findNotes("some words",0,5);
-for my $thisNote ( @{$search->notes} ) {
-   print $thisNote->guid,"\n";
-   print $thisNote->title,"\n";
-}

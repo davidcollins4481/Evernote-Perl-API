@@ -9,9 +9,10 @@ BEGIN {
 use 5.006;
 use warnings;
 use strict;
-
+use base qw(Class::Accessor);
+Net::Evernote->mk_ro_accessors(qw(userId authToken authUrl));
 use Thrift;
-#use Net::SSL;
+
 use Thrift::HttpClient;
 use Thrift::BinaryProtocol;
 
@@ -68,6 +69,8 @@ sub new {
     bless { 
             authToken => $result->{authenticationToken},
             shardId   => $result->{user}->{shardId},
+            authUrl   => $auth_url,
+            userId    => $result->{user}->{id},
           }, $class;
 }
 
@@ -75,7 +78,7 @@ sub writeNote {
     my $self = shift;
     my $title = shift;
     my $content = shift;
-    my $dataUrl = shift || "https://sandbox.evernote.com/edam/note";
+    my $dataUrl = shift || $self->{authUrl};
 
     $content =~ s/\n/<br\/>/g;
     my $cont_encoded =<<EOF;
@@ -107,7 +110,7 @@ EOF
 sub delNote {
     my $self = shift;
     my $guid = shift;
-    my $dataUrl = shift || "https://sandbox.evernote.com/edam/note";
+    my $dataUrl = shift || $self->{authUrl};
 
     my $authToken = $self->{authToken};
     my $shardId = $self->{shardId};
@@ -126,7 +129,7 @@ sub delNote {
 sub getNote {
     my $self = shift;
     my $guid = shift;
-    my $dataUrl = shift || "https://sandbox.evernote.com/edam/note";
+    my $dataUrl = shift || $self->{authUrl};
 
     my $authToken = $self->{authToken};
     my $shardId = $self->{shardId};

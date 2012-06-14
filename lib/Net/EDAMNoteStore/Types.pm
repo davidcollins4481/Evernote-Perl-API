@@ -232,7 +232,7 @@ sub read {
           for (my $_i4 = 0; $_i4 < $_size0; ++$_i4)
           {
             my $elem5 = undef;
-            $elem5 = new EDAMTypes::Note();
+            $elem5 = EDAMTypes::Note->new;
             $xfer += $elem5->read($input);
             push(@{$self->{notes}},$elem5);
           }
@@ -1109,7 +1109,7 @@ sub read {
           for (my $_i88 = 0; $_i88 < $_size84; ++$_i88)
           {
             my $elem89 = undef;
-            $elem89 = new EDAMTypes::Note();
+            $elem89 = EDAMTypes::Note->new;
             $xfer += $elem89->read($input);
             push(@{$self->{notes}},$elem89);
           }
@@ -2330,7 +2330,7 @@ sub read {
       }
       last; };
       /^2$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{note} = new EDAMTypes::Note();
+        $self->{note} = EDAMTypes::Note->new;
         $xfer += $self->{note}->read($input);
       } else {
         $xfer += $input->skip($ftype);
