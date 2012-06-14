@@ -29,7 +29,7 @@ use EDAMErrors::Constants;
 use EDAMLimits::Constants;
 use EDAMLimits::Types;
 
-use EDAMLimits::Types;  
+use EDAMLimits::Types;
 use EDAMTypes::Types;
 
 our $VERSION = '0.06';
@@ -42,18 +42,14 @@ sub new {
     my $consumer_secret = shift;
     my $auth_url = shift || "https://sandbox.evernote.com/edam/user";
     # would like to not have to do this if possible
-    $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
-    
-    print "Auth URL: $auth_url\n" if $ENV{'DEBUG'};
+    #$ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
-    $DB::single = 1;
+    print "Auth URL: $auth_url\n" if $ENV{'DEBUG'};
 
     my $user_http_client = new Thrift::HttpClient($auth_url);
     my $user_protocol = new Thrift::BinaryProtocol($user_http_client);
     
     my $userStore = EDAMUserStore::UserStoreClient->new($user_protocol);
-    
-    $DB::single = 1;
 
     my $result;
 
@@ -63,17 +59,15 @@ sub new {
 
     if ($@) {
         my $err = $@;
-        $DB::single = 1;
         die "Code: " . $$err{'code'} . ', ' . $$err{'message'};
     }
 
     my $auth = $result->{authenticationToken};
-    
-    my $user_full_name = $result->{user}->{name};
+    my $user_full_name = $result->{user}->{username};
 
     bless { 
-            #authToken => $re->authenticationToken,
-            #shardId   => $re->user->shardId,
+            authToken => $result->{authenticationToken},
+            shardId   => $result->{user}->{shardId},
           }, $class;
 }
 
@@ -98,7 +92,7 @@ EOF
     $dataUrl .= "/" . $shardId;
 
     my $transport = Thrift::HttpClient->new($dataUrl);
-    my $protocol  = Thrift::XS::BinaryProtocol->new($transport);
+    my $protocol  = Thrift::BinaryProtocol->new($transport);
     my $client    = EDAMNoteStore::NoteStoreClient->new($protocol);
 
     $transport->open;
@@ -121,7 +115,7 @@ sub delNote {
     $dataUrl .= "/" . $shardId;
 
     my $transport = Thrift::HttpClient->new($dataUrl);
-    my $protocol  = Thrift::XS::BinaryProtocol->new($transport);
+    my $protocol  = Thrift::BinaryProtocol->new($transport);
     my $client    = EDAMNoteStore::NoteStoreClient->new($protocol);
 
     $transport->open;
@@ -140,7 +134,7 @@ sub getNote {
     $dataUrl .= "/" . $shardId;
 
     my $transport = Thrift::HttpClient->new($dataUrl);
-    my $protocol  = Thrift::XS::BinaryProtocol->new($transport);
+    my $protocol  = Thrift::BinaryProtocol->new($transport);
     my $client    = EDAMNoteStore::NoteStoreClient->new($protocol);
 
     $transport->open;
@@ -162,7 +156,7 @@ sub findNotes {
     my $stru = EDAMNoteStore::NoteFilter->new({ words => $string });
 
     my $transport = Thrift::HttpClient->new($dataUrl);
-    my $protocol  = Thrift::XS::BinaryProtocol->new($transport);
+    my $protocol  = Thrift::BinaryProtocol->new($transport);
     my $client    = EDAMNoteStore::NoteStoreClient->new($protocol);
 
     $transport->open;

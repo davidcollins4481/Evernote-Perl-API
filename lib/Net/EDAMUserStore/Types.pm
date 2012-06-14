@@ -444,7 +444,7 @@ sub read {
       }
       last; };
       /^4$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{user} = new EDAMTypes::User();
+        $self->{user} = EDAMTypes::User->new;
         $xfer += $self->{user}->read($input);
       } else {
         $xfer += $input->skip($ftype);

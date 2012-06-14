@@ -5627,7 +5627,7 @@ sub read {
     SWITCH: for($fid)
     {
       /^0$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{success} = new EDAMTypes::Note();
+        $self->{success} = EDAMTypes::Note->new;
         $xfer += $self->{success}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -7378,7 +7378,7 @@ sub read {
       }
       last; };
       /^2$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{note} = new EDAMTypes::Note();
+        $self->{note} = EDAMTypes::Note->new;
         $xfer += $self->{note}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -7460,7 +7460,7 @@ sub read {
     SWITCH: for($fid)
     {
       /^0$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{success} = new EDAMTypes::Note();
+        $self->{success} = EDAMTypes::Note->new;
         $xfer += $self->{success}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -7571,7 +7571,7 @@ sub read {
       }
       last; };
       /^2$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{note} = new EDAMTypes::Note();
+        $self->{note} = EDAMTypes::Note->new;
         $xfer += $self->{note}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -7653,7 +7653,7 @@ sub read {
     SWITCH: for($fid)
     {
       /^0$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{success} = new EDAMTypes::Note();
+        $self->{success} = EDAMTypes::Note->new;
         $xfer += $self->{success}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -8614,7 +8614,7 @@ sub read {
     SWITCH: for($fid)
     {
       /^0$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{success} = new EDAMTypes::Note();
+        $self->{success} = EDAMTypes::Note->new;
         $xfer += $self->{success}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -9079,7 +9079,7 @@ sub read {
     SWITCH: for($fid)
     {
       /^0$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{success} = new EDAMTypes::Note();
+        $self->{success} = EDAMTypes::Note->new;
         $xfer += $self->{success}->read($input);
       } else {
         $xfer += $input->skip($ftype);

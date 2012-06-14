@@ -45,9 +45,9 @@ sub new
         url          => $url,
         out          => $out,
         debugHandler => $debugHandler,
-        debug        => 0,
-        sendTimeout  => 100,
-        recvTimeout  => 750,
+        debug        => 1,
+        sendTimeout  => 2000,
+        recvTimeout  => 2750,
         handle       => undef,
     };
 
