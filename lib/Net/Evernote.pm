@@ -87,6 +87,8 @@ sub new {
     }, $class;
 }
 
+# TODO
+# created, modified, tags, notebook
 sub writeNote {
     my ($self, $args) = @_;
     my $title = $$args{title};
