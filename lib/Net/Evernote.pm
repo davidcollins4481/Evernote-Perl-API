@@ -160,7 +160,6 @@ sub authenticated {
 
 =head1 NAME
 
-[THESE DOCS NEED UPDATED]
 Net::Evernote - Perl client for Evernote
 
 =head1 VERSION
@@ -171,24 +170,29 @@ Version 0.06
 =head1 SYNOPSIS
 
     use Net::Evernote;
+
     my $evernote = Net::Evernote->new({
         auth_token => $auth_token
     });
 
     # write a note
-    my $res = $evernote->writeNote($title, $content);
+    my $res = $evernote->writeNote({
+        title => $title,
+        content => $content
+    });
+
     my $guid = $res->guid;
 
     # get the note
-    my $thisNote = $evernote->getNote($guid);
+    my $thisNote = $evernote->getNote({ guid => $guid });
     print $thisNote->title,"\n";
     print $thisNote->content,"\n";
 
     # delete the note
-    $evernote->deleteNote($guid);
+    $evernote->deleteNote({ guid => $guid });
 
     # find notes
-    my $search = $evernote->findNotes("some words",0,5);
+    my $search = $evernote->findNotes({ keywords => $keywords, offset => $offset, max_notes => 5 });
     for my $thisNote ( @{$search->notes} ) {
         print $thisNote->guid,"\n";
         print $thisNote->title,"\n";
@@ -196,7 +200,7 @@ Version 0.06
 
 =head1 METHODS
 
-=head2 new($auth_token)
+=head2 new({ auth_token => $auth_token })
 
 Initialize the object.
 
@@ -210,7 +214,7 @@ userStoreUrl is the url for user authentication, the default one is https://sand
 If you are in the production development, userStoreUrl should be https://www.evernote.com/edam/user
 
 
-=head2 writeNote(title, content, [dataStoreUrl])
+=head2 writeNote({ title => $title, content => $content })
 
 Write a note to Evernote's server.
 
@@ -227,7 +231,10 @@ EOF
     my ($res,$guid);
 
     eval {
-        $res = $note->writeNote($title, $content);
+        $res = $note->writeNote({
+            title => $title,
+            content => $content
+        });
     };
 
     if ($@) {
@@ -249,7 +256,7 @@ are internally referred to using a globally unique identifier that is written in
 a standard string format, for example, "8743428c-ef91-4d05-9e7c-4a2e856e813a".
 
 
-=head2 getNote(guid, [dataStoreUrl])
+=head2 getNote({ guid => $guid })
 
 Get the note from the server.
 
@@ -257,7 +264,7 @@ Get the note from the server.
     my $thisNote;
 
     eval {
-        $thisNote = $note->getNote($guid);
+        $thisNote = $note->getNote({ guid => $guid });
     };
 
     if ($@) {
@@ -276,14 +283,14 @@ More stuff about ENML please see:
 http://www.evernote.com/about/developer/api/evernote-api.htm#_Toc297053072
 
 
-=head2 delNote(guid, [dataStoreUrl])
+=head2 delNote({ guid => $guid })
 
 Delete the note from Evernote's server.
 
     use Data::Dumper;
 
     eval {
-        $note->delNote($guid);
+        $note->delNote({ guid => $guid });
     };
 
     if ($@) {
@@ -296,7 +303,7 @@ Delete the note from Evernote's server.
 guid is the globally unique identifier for the note.
 
 
-=head2 findNotes(keywords, offset, maxNotes, [dataStoreUrl])
+=head2 findNotes({ keywords => $keywords, offset => $offset, max_notes => $maxNotes })
 
 Find the notes which contain the given keywords.
 
@@ -304,7 +311,7 @@ Find the notes which contain the given keywords.
     my $search;
 
     eval {
-        $search = $note->findNotes("some words",0,5);
+        $search = $note->findNotes({ keywords => "some words", offset => 0, max_notes => 5 });
     };
 
     if ($@) {
@@ -329,14 +336,11 @@ http://www.evernote.com/about/developer/api/
 
 =head1 AUTHOR
 
-Ken Peng <yhpeng@cpan.org>
-
-I wish any people who has the interest in this module to work together with it.
-
+Ken Peng <yhpeng@cpan.org> and David Collins <davidcollins4481@gmail.com>
 
 =head1 BUGS/LIMITATIONS
 
-If you have found bugs, please send email to <yhpeng@cpan.org>
+If you have found bugs, please send email to <yhpeng@cpan.org> or <davidcollins4481@gmail.com>
 
 
 =head1 SUPPORT
@@ -348,7 +352,7 @@ You can find documentation for this module with the perldoc command.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2011 Ken Peng, all rights reserved.
+Copyright 2013 Ken Peng and David Collins, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify 
 it under the same terms as Perl itself.
