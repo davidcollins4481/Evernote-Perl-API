@@ -27,8 +27,8 @@ use EDAMUserStore::Constants;
 our $VERSION = '0.06';
 
 sub new {
-    my $class = shift;
-    my $auth_token = shift;
+    my ($class, $args) = @_;
+    my $auth_token = $$args{auth_token};
     my $debug = $ENV{DEBUG};
     my $evernote_host = 'sandbox.evernote.com';
     my $user_store_url = 'https://' . $evernote_host . '/edam/user';
@@ -80,9 +80,10 @@ sub new {
     }
 
     return bless { 
-        debug       => $debug,
-        _auth_token => $auth_token,
-        _notestore  => $note_store,
+        debug          => $debug,
+        _auth_token    => $auth_token,
+        _notestore     => $note_store,
+        _authenticated => 1, # safe to assume if we've gotten this far?
     }, $class;
 }
 
@@ -148,6 +149,11 @@ sub listNotebooks {
     my $self = shift;
     my $client = $self->{_notestore};
     return $client->listNotebooks($self->{_auth_token});
+}
+
+sub authenticated {
+    my $self = shift;
+    return $self->{_authenticated};
 }
 
 1;
