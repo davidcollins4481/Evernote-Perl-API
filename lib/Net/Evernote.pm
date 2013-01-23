@@ -194,6 +194,14 @@ sub authenticated {
     return $self->{_authenticated};
 }
 
+sub deleteTag {
+    my ($self, $args) = @_;
+    my $ns = $self->{_notestore};
+
+    # FIXME: IS THIS EVEN POSSIBLE?
+    # I don't see any code for this yet in EDAMNoteStore::NoteStore.pm
+}
+
 1;
 
 =head1 NAME
