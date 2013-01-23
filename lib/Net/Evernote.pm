@@ -23,6 +23,7 @@ use EDAMErrors::Types; # before doing `use' EDAMUserStore::UserStore or EDAMNote
 use EDAMUserStore::UserStore;
 use EDAMNoteStore::NoteStore;
 use EDAMUserStore::Constants;
+use Evernote::Note;
 
 our $VERSION = '0.06';
 
@@ -88,13 +89,14 @@ sub new {
 }
 
 # TODO
-# created, modified, tags, notebook
+# guid title content contentHash contentLength created updated deleted active updateSequenceNum notebookGuid tagGuids resources attributes tagNames 
 sub writeNote {
     my ($self, $args) = @_;
     my $title = $$args{title};
     my $content = $$args{content};
 
     $content =~ s/\n/<br\/>/g;
+
     my $cont_encoded =<<EOF;
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
@@ -103,15 +105,27 @@ sub writeNote {
 </en-note>
 EOF
 
+    my $note_args = {
+        title   => $title,
+        content => $cont_encoded,
+    };
+
+    my $tags;
+
+    # make sure this is an array ref
+    if (my $tag_args = $$args{tag_names}) {
+        $tags = ref($tag_args) eq 'ARRAY' ? $tag_args: [$tag_args];
+        $$note_args{tagNames} = $tags;
+    }
+
     my $authToken = $self->{_auth_token};
     my $client    = $self->{_notestore};
 
-    my $note = EDAMTypes::Note->new({
-        title => $title, 
-        content => $cont_encoded,
-    });
+    my $note = EDAMTypes::Note->new($note_args);
 
-    return $client->createNote($authToken, $note);
+    return Net::Evernote::Note->new({
+        _obj => $client->createNote($authToken, $note)
+    });
 }
 
 sub deleteNote {
@@ -130,7 +144,10 @@ sub getNote {
 
     my $client = $self->{_notestore};
     my $auth_token = $self->{_auth_token};
-    $client->getNote($auth_token, $guid, 1);
+
+    return Net::Evernote::Note->new({
+        _obj => $client->getNote($auth_token, $guid, 1),
+    });
 }
 
 sub findNotes {

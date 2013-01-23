@@ -14,11 +14,14 @@ my $evernote = Net::Evernote->new({
 });
 
 my $note_title = 'test title';
+my $note_tags  = [qw(testTag1 testTag2)];
 
 my $note = $evernote->writeNote({
-    title => $note_title,
-    content => 'here is some test content',
+    title     => $note_title,
+    content   => 'here is some test content',
+    tag_names => $note_tags
 });
+
 
 my $guid = $note->guid;
 
@@ -26,11 +29,14 @@ my $new_note = $evernote->getNote({
     guid => $guid,
 });
 
+
 ok($guid eq $new_note->guid, 'New note successfully retrieved');
 
 # NOTE: content returns with markup so not testing that here
 ok($note_title eq $new_note->title, 'Title of new note successfully retrieved');
 
-$evernote->deleteNote({
-    guid => $guid
-});
+
+# delete the test note
+#$evernote->deleteNote({
+#    guid => $guid
+#});
