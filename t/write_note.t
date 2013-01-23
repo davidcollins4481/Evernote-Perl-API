@@ -22,21 +22,30 @@ my $note = $evernote->writeNote({
     tag_names => $note_tags
 });
 
-
 my $guid = $note->guid;
 
 my $new_note = $evernote->getNote({
     guid => $guid,
 });
 
-
 ok($guid eq $new_note->guid, 'New note successfully retrieved');
 
 # NOTE: content returns with markup so not testing that here
 ok($note_title eq $new_note->title, 'Title of new note successfully retrieved');
 
+my $tags = $new_note->tagNames;
+ok(@$tags ~~ @$note_tags, "Tags look good");
 
 # delete the test note
-#$evernote->deleteNote({
-#    guid => $guid
-#});
+$evernote->deleteNote({
+    guid => $guid
+});
+
+my $deleted_note = $evernote->getNote({
+    guid => $guid,
+});
+
+ok($deleted_note->deleted ne '', "Note deleted")
+
+# Hmmm...what to do with the tags? I don't want to accidentally delete a tag from someone's
+# Evernote account that previously existed. Maybe a huge random tag or something?

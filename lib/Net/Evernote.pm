@@ -88,10 +88,11 @@ sub new {
     }, $class;
 }
 
-# TODO
-# guid title content contentHash contentLength created updated deleted active updateSequenceNum notebookGuid tagGuids resources attributes tagNames 
-sub writeNote {
+sub createNote {
     my ($self, $args) = @_;
+    my $auth_token = $self->{_auth_token};
+    my $client    = $self->{_notestore};
+
     my $title = $$args{title};
     my $content = $$args{content};
 
@@ -112,21 +113,37 @@ EOF
 
     my $tags;
 
-    # make sure this is an array ref
+    # if tag already exists, just uses it and doesn't overwrite it.
+    # Not sure if the eval is the best way to handle it but it seems
+    # to do the job
     if (my $tag_args = $$args{tag_names}) {
+        # make sure this is an array ref
         $tags = ref($tag_args) eq 'ARRAY' ? $tag_args: [$tag_args];
+        map {
+            my $tag = EDAMTypes::Tag->new({ name => $_ });
+            eval {
+                $client->createTag($auth_token, $tag);
+            };
+
+            if ($@) {
+                # dump 'em in a ditch
+            }
+        } @$tags;
+
         $$note_args{tagNames} = $tags;
     }
-
-    my $authToken = $self->{_auth_token};
-    my $client    = $self->{_notestore};
 
     my $note = EDAMTypes::Note->new($note_args);
 
     return Net::Evernote::Note->new({
-        _obj => $client->createNote($authToken, $note)
+        _obj        => $client->createNote($auth_token, $note),
+        _note_store => $self->{_notestore},
+        _auth       => $auth_token,
     });
 }
+
+#alias
+*writeNote = \&createNote;
 
 sub deleteNote {
     my ($self, $args) = @_;
@@ -146,7 +163,9 @@ sub getNote {
     my $auth_token = $self->{_auth_token};
 
     return Net::Evernote::Note->new({
-        _obj => $client->getNote($auth_token, $guid, 1),
+        _obj        => $client->getNote($auth_token, $guid, 1),
+        _note_store => $self->{_notestore},
+        _auth       => $auth_token,
     });
 }
 

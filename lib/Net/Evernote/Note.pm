@@ -9,11 +9,30 @@ sub new {
 
     
     return bless { 
-        _obj  => $$args{_obj},
-        debug => $debug,
+        _obj        => $$args{_obj},
+        _note_store => $$args{_note_store},
+        _auth       => $$args{_auth},
+        debug       => $debug,
     }, $class;
 }
 
+sub tagNames {
+    my $self = shift;
+
+    my $obj  = $self->{_obj};
+    my $ns   = $self->{_note_store};
+    my $auth = $self->{_auth};
+    my $guids = $obj->tagGuids;
+
+    return undef if !$guids;
+    my @tag_names = map {
+        $ns->getTag($auth, $_)->name;
+    } @$guids;
+
+    return wantarray ? @tag_names : \@tag_names;
+}
+
+# the magic
 sub AUTOLOAD {
     my ($self,@args) = @_;
     our ($AUTOLOAD);
