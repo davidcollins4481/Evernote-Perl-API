@@ -4,6 +4,8 @@ use Test::More qw(no_plan);
 use FindBin;
 use lib $FindBin::Bin;
 use Net::Evernote;
+use DateTime;
+
 
 use Common qw(:DEFAULT $config);
 
@@ -14,12 +16,25 @@ my $evernote = Net::Evernote->new({
 });
 
 my $note_title = 'test title';
-my $note_tags  = [qw(testTag1 testTag2)];
+my $note_tags  = [qw(evernote-perl-api-test-tag-1 evernote-perl-api-test-tag-2)];
+
+# let's throw a date in there:
+my $dt = DateTime->new(
+    year   => 1981,
+    month  => 4,
+    day    => 4,
+    hour   => 13,
+    minute => 30,
+    time_zone => 'EST'
+);
+
+my $epoch_time  = $dt->epoch;
 
 my $note = $evernote->writeNote({
     title     => $note_title,
     content   => 'here is some test content',
-    tag_names => $note_tags
+    tag_names => $note_tags,
+    created   => $epoch_time*1000,
 });
 
 my $guid = $note->guid;

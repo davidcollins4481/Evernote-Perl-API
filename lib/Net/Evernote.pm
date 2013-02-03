@@ -6,7 +6,6 @@ BEGIN {
     unshift @INC,$module_dir;
 }
 
-
 use warnings;
 use strict;
 use Exception::Class (
@@ -95,7 +94,10 @@ sub createNote {
 
     my $title = $$args{title};
     my $content = $$args{content};
+    my $created = $$args{created};
 
+    # support notebook name?
+    my $note_book_guid = $$args{notebook_guid};
     $content =~ s/\n/<br\/>/g;
 
     my $cont_encoded =<<EOF;
@@ -110,6 +112,8 @@ EOF
         title   => $title,
         content => $cont_encoded,
     };
+
+    $$note_args{created} = $created if $created;
 
     my $tags;
 
