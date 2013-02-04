@@ -30,7 +30,14 @@ sub new {
     my ($class, $args) = @_;
     my $auth_token = $$args{auth_token};
     my $debug = $ENV{DEBUG};
-    my $evernote_host = 'sandbox.evernote.com';
+    my $evernote_host;
+
+    if ($$args{use_sandbox}) {
+        $evernote_host = 'sandbox.evernote.com';
+    } else {
+        $evernote_host = 'evernote.com';
+    }
+
     my $user_store_url = 'https://' . $evernote_host . '/edam/user';
 
     # this is necessary with Crypt::SSLeay....not even sure why at the moment :D

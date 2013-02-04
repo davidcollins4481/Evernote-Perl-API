@@ -12,7 +12,8 @@ use Common qw(:DEFAULT $config);
 BEGIN { use_ok('Net::Evernote') };
 
 my $evernote = Net::Evernote->new({
-    auth_token => $$config{'auth_token'}
+    auth_token => $$config{'auth_token'},
+    use_sandbox => 1,
 });
 
 my $note_title = 'test title';
