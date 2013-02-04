@@ -35,7 +35,7 @@ sub new {
     if ($$args{use_sandbox}) {
         $evernote_host = 'sandbox.evernote.com';
     } else {
-        $evernote_host = 'evernote.com';
+        $evernote_host = 'www.evernote.com';
     }
 
     my $user_store_url = 'https://' . $evernote_host . '/edam/user';
