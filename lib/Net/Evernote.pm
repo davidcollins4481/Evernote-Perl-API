@@ -33,6 +33,9 @@ sub new {
     my $evernote_host = 'sandbox.evernote.com';
     my $user_store_url = 'https://' . $evernote_host . '/edam/user';
 
+    # this is necessary with Crypt::SSLeay....not even sure why at the moment :D
+    $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
+
     my $result;
     my $note_store;
 
