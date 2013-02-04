@@ -12,7 +12,7 @@ use Common qw(:DEFAULT $config);
 BEGIN { use_ok('Net::Evernote') };
 
 my $evernote = Net::Evernote->new({
-    auth_token => $$config{'auth_token'},
+    developer_token => $$config{'developer_token'},
     use_sandbox => 1,
 });
 

@@ -11,7 +11,7 @@ sub new {
     return bless { 
         _obj        => $$args{_obj},
         _note_store => $$args{_note_store},
-        _auth       => $$args{_auth},
+        _dev_token       => $$args{_dev_token},
         debug       => $debug,
     }, $class;
 }
@@ -21,7 +21,7 @@ sub tagNames {
 
     my $obj  = $self->{_obj};
     my $ns   = $self->{_note_store};
-    my $auth = $self->{_auth};
+    my $auth = $self->{_dev_token};
     my $guids = $obj->tagGuids;
 
     return undef if !$guids;

@@ -28,7 +28,7 @@ our $VERSION = '0.06';
 
 sub new {
     my ($class, $args) = @_;
-    my $auth_token = $$args{auth_token};
+    my $developer_token = $$args{developer_token};
     my $debug = $ENV{DEBUG};
     my $evernote_host;
 
@@ -71,7 +71,7 @@ sub new {
             exit(1)
         }
 
-        my $note_store_url = $user_store->getNoteStoreUrl( $auth_token );
+        my $note_store_url = $user_store->getNoteStoreUrl( $developer_token );
 
         warn "[INFO] note store url : $note_store_url \n" if $debug;
         my $note_store_client = Thrift::HttpClient->new( $note_store_url );
@@ -91,7 +91,7 @@ sub new {
 
     return bless { 
         debug          => $debug,
-        _auth_token    => $auth_token,
+        _developer_token    => $developer_token,
         _notestore     => $note_store,
         _authenticated => 1, # safe to assume if we've gotten this far?
     }, $class;
@@ -99,7 +99,7 @@ sub new {
 
 sub createNote {
     my ($self, $args) = @_;
-    my $auth_token = $self->{_auth_token};
+    my $developer_token = $self->{_developer_token};
     my $client    = $self->{_notestore};
 
     my $title = $$args{title};
@@ -136,7 +136,7 @@ EOF
         map {
             my $tag = EDAMTypes::Tag->new({ name => $_ });
             eval {
-                $client->createTag($auth_token, $tag);
+                $client->createTag($developer_token, $tag);
             };
 
             if ($@) {
@@ -150,9 +150,9 @@ EOF
     my $note = EDAMTypes::Note->new($note_args);
 
     return Net::Evernote::Note->new({
-        _obj        => $client->createNote($auth_token, $note),
+        _obj        => $client->createNote($developer_token, $note),
         _note_store => $self->{_notestore},
-        _auth       => $auth_token,
+        _dev_token       => $developer_token,
     });
 }
 
@@ -163,7 +163,7 @@ sub deleteNote {
     my ($self, $args) = @_;
     my $guid = $$args{guid};
 
-    my $authToken = $self->{_auth_token};
+    my $authToken = $self->{_developer_token};
     my $client = $self->{_notestore};
 
     $client->deleteNote($authToken,$guid);
@@ -174,12 +174,12 @@ sub getNote {
     my $guid = $$args{guid};
 
     my $client = $self->{_notestore};
-    my $auth_token = $self->{_auth_token};
+    my $developer_token = $self->{_developer_token};
 
     return Net::Evernote::Note->new({
-        _obj        => $client->getNote($auth_token, $guid, 1),
+        _obj        => $client->getNote($developer_token, $guid, 1),
         _note_store => $self->{_notestore},
-        _auth       => $auth_token,
+        _dev_token       => $developer_token,
     });
 }
 
@@ -189,18 +189,18 @@ sub findNotes {
     my $offset = $$args{offset} || 0;
     my $maxNotes = $$args{maxCount} || 1;
 
-    my $auth_token = $self->{_auth_token};
+    my $developer_token = $self->{_developer_token};
 
     my $stru = EDAMNoteStore::NoteFilter->new({ words => $string });
     my $client = $self->{_notestore};
 
-    return $client->findNotes($auth_token,$stru,$offset,$maxNotes);
+    return $client->findNotes($developer_token,$stru,$offset,$maxNotes);
 }
 
 sub listNotebooks {
     my $self = shift;
     my $client = $self->{_notestore};
-    return $client->listNotebooks($self->{_auth_token});
+    return $client->listNotebooks($self->{_developer_token});
 }
 
 sub authenticated {
@@ -232,7 +232,7 @@ Version 0.06
     use Net::Evernote;
 
     my $evernote = Net::Evernote->new({
-        auth_token => $auth_token
+        developer_token => $developer_token
     });
 
     # write a note
@@ -260,12 +260,12 @@ Version 0.06
 
 =head1 METHODS
 
-=head2 new({ auth_token => $auth_token })
+=head2 new({ developer_token => $developer_token })
 
 Initialize the object.
 
     my $evernote = Net::Evernote->new({
-        auth_token => $auth_token
+        developer_token => $developer_token
     });
 
 
