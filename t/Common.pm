@@ -4,5 +4,5 @@ use base 'Exporter';
 our @EXPORT_OK = qw($config);
 
 our $config = {
-    developer_token      => 'S=s1:U=17f6f:E=143b2ad751d:C=13c5afc491d:P=1cd:A=en-devtoken:H=474c457e2d0d5db4387602b974fc9826'
+    developer_token      => 'S=s1:U=17f6f:E=14572b1de11:C=13e1b00b214:P=1cd:A=en-devtoken:V=2:H=7d28e083d0ac4c4597743241eb8e4292'
 };
