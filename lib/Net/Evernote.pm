@@ -23,6 +23,7 @@ use EDAMUserStore::UserStore;
 use EDAMNoteStore::NoteStore;
 use EDAMUserStore::Constants;
 use Evernote::Note;
+use Evernote::Tag;
 
 our $VERSION = '0.06';
 
@@ -86,10 +87,10 @@ sub new {
     }
 
     return bless { 
-        debug          => $debug,
-        _developer_token    => $developer_token,
-        _notestore     => $note_store,
-        _authenticated => 1, # safe to assume if we've gotten this far?
+        debug             => $debug,
+        _developer_token  => $developer_token,
+        _notestore        => $note_store,
+        _authenticated    => 1, # safe to assume if we've gotten this far?
     }, $class;
 }
 
@@ -142,6 +143,11 @@ EOF
         } @$tags;
 
          $$note_args{tagNames} = $tags;
+    }
+
+    if (my $tag_guids = $$args{tag_guids}) {
+        my $guids = ref($tag_guids) eq 'ARRAY' ? $tag_guids : [$tag_guids];
+        $$note_args{tagGuids} = $guids;
     }
 
     my $note = EDAMTypes::Note->new($note_args);
@@ -212,17 +218,26 @@ sub createTag {
     die "Name required to create tag\n" if !$name;
 
     my $tag = EDAMTypes::Tag->new({ name => $name });
-$DB::single = 1;
-    eval {
-        $client->createTag($developer_token, $tag);
-    };
 
-    if ($@) {
-        # dump 'em in a ditch
-    }
+    return Net::Evernote::Tag->new({
+        _obj        => $client->createTag($developer_token, $tag),
+        _note_store => $self->{_notestore},
+        _dev_token  => $developer_token,
+    }); 
+}
 
-    my $x = 4;
+sub getTag {
+    my ($self, $args) = @_;
+    my $guid = $$args{guid};
 
+    my $client = $self->{_notestore};
+    my $developer_token = $self->{_developer_token};
+
+    return Net::Evernote::Tag->new({
+        _obj        => $client->getTag($developer_token, $guid, 1),
+        _note_store => $self->{_notestore},
+        _dev_token       => $developer_token,
+    }); 
 }
 
 sub deleteTag {
