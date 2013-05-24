@@ -105,7 +105,7 @@ sub createNote {
     my $created = $$args{created};
 
     # support notebook name?
-    my $note_book_guid = $$args{notebook_guid};
+    my $notebook_guid = $$args{notebook_guid};
     $content =~ s/\n/<br\/>/g;
 
      my $cont_encoded =<<EOF;
@@ -122,6 +122,7 @@ EOF
     };
 
     $$note_args{created} = $created if $created;
+    $$note_args{notebookGuid} = $notebook_guid if $notebook_guid;
 
     my $tags;
 
@@ -178,6 +179,20 @@ sub getNote {
 
     return Net::Evernote::Note->new({
         _obj        => $client->getNote($developer_token, $guid, 1),
+        _note_store => $self->{_notestore},
+        _dev_token       => $developer_token,
+    });
+}
+
+sub getNotebook {
+    my ($self, $args) = @_;
+    my $guid = $$args{guid};
+
+    my $client = $self->{_notestore};
+    my $developer_token = $self->{_developer_token};
+
+    return Net::Evernote::Note->new({
+        _obj        => $client->getNotebook($developer_token, $guid, 1),
         _note_store => $self->{_notestore},
         _dev_token       => $developer_token,
     });

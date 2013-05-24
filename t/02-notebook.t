@@ -28,4 +28,19 @@ my $notebookGuid;
 
 }
 
+# put a note in the notebook
+{
+    my $note = $evernote->createNote({
+        title         => 'test title',
+        content       => 'test content',
+        notebook_guid => $notebookGuid,
+    });
+
+    ok($note->guid && $note->notebookGuid eq $notebookGuid , 'Note created in new notebook');
+
+    $note->delete;
+    my $notebook = $evernote->getNotebook({ guid => $notebookGuid });
+    ok($notebook->guid eq $notebookGuid, "Notebook retrieved");
+}
+
 
