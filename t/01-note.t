@@ -9,8 +9,6 @@ use DateTime;
 
 use Common qw(:DEFAULT $config);
 
-BEGIN { use_ok('Net::Evernote') };
-
 my $evernote = Net::Evernote->new({
     developer_token => $$config{'developer_token'},
     use_sandbox => 1,

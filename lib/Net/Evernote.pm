@@ -24,7 +24,7 @@ use EDAMNoteStore::NoteStore;
 use EDAMUserStore::Constants;
 use Evernote::Note;
 use Evernote::Tag;
-
+use Evernote::Notebook;
 our $VERSION = '0.06';
 
 sub new {
@@ -203,6 +203,18 @@ sub listNotebooks {
     return $client->listNotebooks($self->{_developer_token});
 }
 
+sub createNotebook {
+    my ($self, $args) = @_;
+    my $client = $self->{_notestore};
+    my $notebook = EDAMTypes::Notebook->new({
+        name => $$args{name},
+    });
+
+    return Net::Evernote::Notebook->new({
+        _obj => $client->createNotebook($self->{_developer_token}, $notebook),
+    });
+}
+
 sub authenticated {
     my $self = shift;
     return $self->{_authenticated};
@@ -252,7 +264,7 @@ sub deleteTag {
 
 =head1 NAME
 
-Net::Evernote - Perl client for Evernote
+Net::Evernote - Perl API for Evernote
 
 =head1 VERSION
 

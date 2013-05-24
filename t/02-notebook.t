@@ -13,4 +13,19 @@ my $evernote = Net::Evernote->new({
     use_sandbox => 1,
 });
 
+my $notebookName = 'test_notebook-'. time;
+my $notebookGuid;
+
+# create a notebook
+{
+    my $notebook = $evernote->createNotebook({
+        name => $notebookName,
+    });
+
+    $notebookGuid = $notebook->guid;
+
+    isnt($notebookGuid, '', "Notebook created with GUID ${notebookGuid}");
+
+}
+
 
