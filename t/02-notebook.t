@@ -3,6 +3,7 @@ use warnings;
 
 use Test::More qw(no_plan);
 use Net::Evernote;
+use FindBin;
 
 use lib $FindBin::Bin;
 use Common qw(:DEFAULT $config);
