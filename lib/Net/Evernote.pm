@@ -93,6 +93,7 @@ sub new {
     }, $class;
 }
 
+# TODO: make this is current
 sub createNote {
     my ($self, $args) = @_;
     my $developer_token = $self->{_developer_token};
@@ -106,7 +107,7 @@ sub createNote {
     my $note_book_guid = $$args{notebook_guid};
     $content =~ s/\n/<br\/>/g;
 
-    my $cont_encoded =<<EOF;
+     my $cont_encoded =<<EOF;
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
 <en-note>
@@ -137,10 +138,10 @@ EOF
 
             if ($@) {
                 # dump 'em in a ditch
-            }
+             }
         } @$tags;
 
-        $$note_args{tagNames} = $tags;
+         $$note_args{tagNames} = $tags;
     }
 
     my $note = EDAMTypes::Note->new($note_args);
@@ -151,9 +152,6 @@ EOF
         _dev_token       => $developer_token,
     });
 }
-
-#alias
-*writeNote = \&createNote;
 
 sub deleteNote {
     my ($self, $args) = @_;
@@ -204,6 +202,29 @@ sub authenticated {
     return $self->{_authenticated};
 }
 
+sub createTag {
+    my ($self, $args) = @_;
+    my $developer_token = $self->{_developer_token};
+    my $client    = $self->{_notestore};
+
+    my $name = $$args{name};
+
+    die "Name required to create tag\n" if !$name;
+
+    my $tag = EDAMTypes::Tag->new({ name => $name });
+$DB::single = 1;
+    eval {
+        $client->createTag($developer_token, $tag);
+    };
+
+    if ($@) {
+        # dump 'em in a ditch
+    }
+
+    my $x = 4;
+
+}
+
 sub deleteTag {
     my ($self, $args) = @_;
     my $ns = $self->{_notestore};
@@ -232,7 +253,7 @@ Version 0.06
     });
 
     # write a note
-    my $res = $evernote->writeNote({
+    my $res = $evernote->createNote({
         title => $title,
         content => $content
     });

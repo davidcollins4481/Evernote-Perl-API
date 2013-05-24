@@ -31,7 +31,7 @@ my $dt = DateTime->new(
 
 my $epoch_time  = $dt->epoch;
 
-my $note = $evernote->writeNote({
+my $note = $evernote->createNote({
     title     => $note_title,
     content   => 'here is some test content',
     tag_names => $note_tags,
@@ -46,8 +46,10 @@ my $new_note = $evernote->getNote({
 
 ok($guid eq $new_note->guid, 'New note successfully retrieved');
 
-# NOTE: content returns with markup so not testing that here
+# FIXME: content returns with markup so not testing that here
 ok($note_title eq $new_note->title, 'Title of new note successfully retrieved');
+
+ok($new_note->active == 1, 'Note is active');
 
 my $tags = $new_note->tagNames;
 ok(@$tags ~~ @$note_tags, "Tags look good");
@@ -61,7 +63,8 @@ my $deleted_note = $evernote->getNote({
     guid => $guid,
 });
 
-ok($deleted_note->deleted ne '', "Note deleted")
+ok($deleted_note->deleted ne '', "Note deleted");
+ok($deleted_note->active != 1, "Note is no longer active");
 
 # Hmmm...what to do with the tags? I don't want to accidentally delete a tag from someone's
 # Evernote account that previously existed. Maybe a huge random tag or something?

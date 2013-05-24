@@ -6,7 +6,6 @@ use strict;
 sub new {
     my ($class, $args) = @_;
     my $debug = $ENV{DEBUG};
-
     
     return bless { 
         _obj        => $$args{_obj},
@@ -14,6 +13,11 @@ sub new {
         _dev_token       => $$args{_dev_token},
         debug       => $debug,
     }, $class;
+}
+
+# return all of the note's Tag objects
+sub tags {
+    
 }
 
 sub tagNames {
@@ -47,6 +51,7 @@ sub AUTOLOAD {
 }
 
 1;
+
 __END__
 
 Basic idea is that this class will act as a pretty simple wrapper. I would like to store 
@@ -57,5 +62,15 @@ The intent is for objects of this type to ONLY be instantiated inside of Net::Ev
 The goal is to use AUTOLOAD to allow calls to methods that don't exist here to then attempt 
 to go through to the EDAMTypes::Note obj and return the value there. This way, it's not a 
 huge necessity to mimic ALL of the functionality that's already built into the sdk.
+
+Methods
++ guid
++ title
++ content
++ active
+
+reference to all of the notes tags
++ tags
+
 
 1;
