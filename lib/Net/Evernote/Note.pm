@@ -20,6 +20,15 @@ sub tags {
     
 }
 
+sub delete {
+    my ($self) = @_;
+
+    my $authToken = $self->{_dev_token};
+    my $client = $self->{_note_store};
+    my $guid = $self->guid;
+    return $client->deleteNote($authToken,$guid);
+}
+
 sub tagNames {
     my $self = shift;
 
@@ -46,6 +55,7 @@ sub AUTOLOAD {
     if ($self->{_obj}->can($method)) {
         return $self->{_obj}->$method;
     } else {
+        # FIXME: would be better to get feedback about a non-existing method
         return undef;
     }
 }

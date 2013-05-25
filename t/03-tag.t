@@ -52,7 +52,6 @@ my ($tag_guid, $note_guid);
     # only set one...check that
     my $firstTagGuid = $$tagGuids[0];
     is($firstTagGuid, $tag_guid, "Tag successfully attached to note");
-
     # delete tag and note
     $note->delete;
     $tag->delete;
