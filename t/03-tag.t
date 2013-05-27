@@ -9,7 +9,7 @@ use Net::Evernote;
 use Common qw(:DEFAULT $config);
 
 my $evernote = Net::Evernote->new({
-    developer_token => $$config{'developer_token'},
+    authentication_token => $$config{'authentication_token'},
     use_sandbox => 1,
 });
 
