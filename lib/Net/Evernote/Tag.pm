@@ -40,3 +40,64 @@ sub AUTOLOAD {
     }
 }
 1;
+
+
+
+=head1 NAME
+
+Net::Evernote::Tag
+
+=head1 VERSION
+
+Version 0.06
+
+
+=head1 SYNOPSIS
+
+    use Net::Evernote;
+    use Net::Evernote::Tag;
+
+    my $evernote = Net::Evernote->new({
+        authentication_token => $authentication_token
+    });
+
+    my $tag = $evernote->createTag({'name' => $tag_name });
+    $tag_guid = $tag->guid;
+
+    my $tag = $evernote->getTag({
+        guid => $tag_guid, 
+    });
+
+    my $note = $evernote->getNote({
+        guid => $note_guid,
+    });
+
+    my $tagGuids = $note->tagGuids;
+
+=head1 SEE ALSO
+
+http://www.evernote.com/about/developer/api/
+
+
+=head1 AUTHOR
+
+David Collins <davidcollins4481@gmail.com>
+
+=head1 BUGS/LIMITATIONS
+
+If you have found bugs, please send email to <davidcollins4481@gmail.com>
+
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc Net::Evernote::Tag
+
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2013 David Collins, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify 
+it under the same terms as Perl itself.

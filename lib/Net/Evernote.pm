@@ -191,7 +191,7 @@ sub getNotebook {
     my $client = $self->{_notestore};
     my $authentication_token = $self->{_authentication_token};
 
-    return Net::Evernote::Note->new({
+    return Net::Evernote::Notebook->new({
         _obj        => $client->getNotebook($authentication_token, $guid, 1),
         _note_store => $self->{_notestore},
         _dev_token       => $authentication_token,
@@ -455,11 +455,11 @@ http://www.evernote.com/about/developer/api/
 
 =head1 AUTHOR
 
-Ken Peng <yhpeng@cpan.org> and David Collins <davidcollins4481@gmail.com>
+David Collins <davidcollins4481@gmail.com>
 
 =head1 BUGS/LIMITATIONS
 
-If you have found bugs, please send email to <yhpeng@cpan.org> or <davidcollins4481@gmail.com>
+If you have found bugs, please send email to <davidcollins4481@gmail.com>
 
 
 =head1 SUPPORT
@@ -471,7 +471,7 @@ You can find documentation for this module with the perldoc command.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2013 Ken Peng and David Collins, all rights reserved.
+Copyright 2013 David Collins, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify 
 it under the same terms as Perl itself.

@@ -64,23 +64,82 @@ sub AUTOLOAD {
 
 __END__
 
-Basic idea is that this class will act as a pretty simple wrapper. I would like to store 
-a reference to the EDAMTypes::Note object and export a simple interface from here.
-
-The intent is for objects of this type to ONLY be instantiated inside of Net::Evernote.pm
-
-The goal is to use AUTOLOAD to allow calls to methods that don't exist here to then attempt 
-to go through to the EDAMTypes::Note obj and return the value there. This way, it's not a 
-huge necessity to mimic ALL of the functionality that's already built into the sdk.
-
-Methods
-+ guid
-+ title
-+ content
-+ active
-
-reference to all of the notes tags
-+ tags
-
-
 1;
+
+
+=head1 NAME
+
+Net::Evernote::Note
+
+=head1 VERSION
+
+Version 0.06
+
+
+=head1 SYNOPSIS
+
+    use Net::Evernote;
+    use Net::Evernote::Note;
+
+    my $evernote = Net::Evernote->new({
+        authentication_token => $authentication_token
+    });
+
+my $note_title = 'test title';
+my $note_tags  = [qw(evernote-perl-api-test-tag-1 evernote-perl-api-test-tag-2)];
+
+# let's throw a date in there:
+my $dt = DateTime->new(
+    year   => 1981,
+    month  => 4,
+    day    => 4,
+    hour   => 13,
+    minute => 30,
+    time_zone => 'EST'
+);
+
+my $epoch_time  = $dt->epoch;
+
+my $note = $evernote->createNote({
+    title     => $note_title,
+    content   => 'here is some test content',
+    tag_names => $note_tags,
+    created   => $epoch_time*1000,
+});
+
+my $guid = $note->guid;
+
+my $new_note = $evernote->getNote({
+    guid => $guid,
+});
+
+# delete it
+$new_note->delete;
+
+=head1 SEE ALSO
+
+http://www.evernote.com/about/developer/api/
+
+
+=head1 AUTHOR
+
+David Collins <davidcollins4481@gmail.com>
+
+=head1 BUGS/LIMITATIONS
+
+If you have found bugs, please send email to <davidcollins4481@gmail.com>
+
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc Net::Evernote::Note
+
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2013 David Collins, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify 
+it under the same terms as Perl itself.
