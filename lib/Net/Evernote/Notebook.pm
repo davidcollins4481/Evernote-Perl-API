@@ -10,16 +10,23 @@ sub new {
 
     return bless { 
         _obj        => $obj,
-        _dev_token  => $$args{_dev_token},
+        _authentication_token  => $$args{_authentication_token},
+        _notestore  => $$args{_notestore},
         debug       => $debug,
         name        => $$args{name},
-        guid        => $$args{guid},
+#        guid        => $$args{guid},
     }, $class;
 }
 
-#sub notes {
-#    # TODO
-#}
+sub delete {
+    my $self = shift; 
+    my $guid = $self->guid;
+    my $authToken = $self->{_authentication_token};
+    my $client = $self->{_notestore};
+
+    return $client->expungeNotebook($authToken,$guid);
+   
+}
 
 # the magic
 sub AUTOLOAD {

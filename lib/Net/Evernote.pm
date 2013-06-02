@@ -156,7 +156,7 @@ EOF
     return Net::Evernote::Note->new({
         _obj        => $client->createNote($authentication_token, $note),
         _note_store => $self->{_notestore},
-        _dev_token       => $authentication_token,
+        _authentication_token       => $authentication_token,
     });
 }
 
@@ -180,7 +180,7 @@ sub getNote {
     return Net::Evernote::Note->new({
         _obj        => $client->getNote($authentication_token, $guid, 1),
         _note_store => $self->{_notestore},
-        _dev_token       => $authentication_token,
+        _authentication_token       => $authentication_token,
     });
 }
 
@@ -191,11 +191,23 @@ sub getNotebook {
     my $client = $self->{_notestore};
     my $authentication_token = $self->{_authentication_token};
 
-    return Net::Evernote::Notebook->new({
-        _obj        => $client->getNotebook($authentication_token, $guid, 1),
-        _note_store => $self->{_notestore},
-        _dev_token       => $authentication_token,
-    });
+    my $notebook;
+    eval {
+        $notebook = Net::Evernote::Notebook->new({
+            _obj        => $client->getNotebook($authentication_token, $guid, 1),
+            _notestore => $self->{_notestore},
+            _authentication_token       => $authentication_token,
+        });
+    };
+
+    if (my $error = $@) {
+        # notebook not found
+        if (ref($error) eq 'EDAMNotFoundException') {
+            return;
+        }
+    }
+
+    return $notebook;
 }
 
 sub findNotes {
@@ -227,7 +239,18 @@ sub createNotebook {
 
     return Net::Evernote::Notebook->new({
         _obj => $client->createNotebook($self->{_authentication_token}, $notebook),
+        _notestore => $self->{_notestore},
     });
+}
+
+sub deleteNotebook {
+    my ($self, $args) = @_;
+    my $guid = $$args{guid};
+
+    my $authToken = $self->{_authentication_token};
+    my $client = $self->{_notestore};
+
+    return $client->expungeNotebook($authToken,$guid);
 }
 
 sub authenticated {
@@ -249,7 +272,7 @@ sub createTag {
     return Net::Evernote::Tag->new({
         _obj        => $client->createTag($authentication_token, $tag),
         _note_store => $self->{_notestore},
-        _dev_token  => $authentication_token,
+        _authentication_token  => $authentication_token,
     }); 
 }
 
@@ -263,7 +286,7 @@ sub getTag {
     return Net::Evernote::Tag->new({
         _obj        => $client->getTag($authentication_token, $guid, 1),
         _note_store => $self->{_notestore},
-        _dev_token       => $authentication_token,
+        _authentication_token       => $authentication_token,
     }); 
 }
 

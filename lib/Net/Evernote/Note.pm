@@ -10,7 +10,7 @@ sub new {
     return bless { 
         _obj        => $$args{_obj},
         _note_store => $$args{_note_store},
-        _dev_token       => $$args{_dev_token},
+        _authentication_token       => $$args{_authentication_token},
         debug       => $debug,
     }, $class;
 }
@@ -23,7 +23,7 @@ sub tags {
 sub delete {
     my ($self) = @_;
 
-    my $authToken = $self->{_dev_token};
+    my $authToken = $self->{_authentication_token};
     my $client = $self->{_note_store};
     my $guid = $self->guid;
     return $client->deleteNote($authToken,$guid);
@@ -34,7 +34,7 @@ sub tagNames {
 
     my $obj  = $self->{_obj};
     my $ns   = $self->{_note_store};
-    my $auth = $self->{_dev_token};
+    my $auth = $self->{_authentication_token};
     my $guids = $obj->tagGuids;
 
     return undef if !$guids;

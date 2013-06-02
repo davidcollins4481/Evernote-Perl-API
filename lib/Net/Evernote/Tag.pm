@@ -15,16 +15,18 @@ sub new {
 
     return bless { 
         _obj        => $obj,
-        _dev_token  => $$args{_dev_token},
+        _authentication_token  => $$args{_authentication_token},
         debug       => $debug,
-        name        => $$args{name},
-        guid        => $$args{guid},
     }, $class;
 }
 
-sub notes {
-    # TODO
-}
+#sub notes {
+#    # TODO
+#}
+
+#sub delete {
+#    
+#}
 
 # the magic
 sub AUTOLOAD {

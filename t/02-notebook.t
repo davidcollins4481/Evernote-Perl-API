@@ -13,7 +13,7 @@ my $evernote = Net::Evernote->new({
     use_sandbox => 1,
 });
 
-my $notebookName = 'test_notebook-'. time;
+my $notebookName = 'test_notebook-new'. time;
 my $notebookGuid;
 
 # create a notebook
@@ -41,6 +41,19 @@ my $notebookGuid;
     $note->delete;
     my $notebook = $evernote->getNotebook({ guid => $notebookGuid });
     ok($notebook->guid eq $notebookGuid, "Notebook retrieved");
+}
+
+# delete the notebook
+{
+    my $notebook = $evernote->getNotebook({ guid => $notebookGuid });
+    # @return The Update Sequence Number for this change within the account.
+    # I guess this means a positive value = success ?
+    my $deleted = $notebook->delete;
+    ok(!!$deleted, "Notebook deleted");
+
+    # try to get the notebook again
+    my $deleted_notebook = $evernote->getNotebook({ guid => $notebookGuid });
+    is($deleted_notebook, undef, "Notebook deleted");
 }
 
 
