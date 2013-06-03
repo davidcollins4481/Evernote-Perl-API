@@ -14,7 +14,6 @@ sub new {
         _notestore  => $$args{_notestore},
         debug       => $debug,
         name        => $$args{name},
-#        guid        => $$args{guid},
     }, $class;
 }
 
@@ -25,7 +24,6 @@ sub delete {
     my $client = $self->{_notestore};
 
     return $client->expungeNotebook($authToken,$guid);
-   
 }
 
 # the magic

@@ -14,14 +14,14 @@ my $evernote = Net::Evernote->new({
 });
 
 my $tag_name = 'test tag-' . time;
-my ($tag_guid, $note_guid);
+my ($tagGuid, $note_guid);
 
 # create a tag
 {
     my $tag = $evernote->createTag({'name' => $tag_name });
     ok($tag->name eq $tag_name, "Tag name retrieved");
-    $tag_guid = $tag->guid;
-    isnt($tag_guid, '', "Tag has GUID (${tag_guid})");
+    $tagGuid = $tag->guid;
+    isnt($tagGuid, '', "Tag has GUID (${tagGuid})");
 }
 
 # create a note and apply the tag
@@ -29,7 +29,7 @@ my ($tag_guid, $note_guid);
     my $note = $evernote->createNote({
         title     => 'tag tester',
         content   => 'tag test content',
-        tag_guids => [$tag_guid],
+        tag_guids => [$tagGuid],
     });
 
     $note_guid = $note->guid;
@@ -38,10 +38,10 @@ my ($tag_guid, $note_guid);
 # retrieve the tag and it's notes
 {
     my $tag = $evernote->getTag({
-        guid => $tag_guid, 
+        guid => $tagGuid, 
     });
 
-    is($tag->guid, $tag_guid, "Tag retrieved by GUID (${tag_guid})");
+    is($tag->guid, $tagGuid, "Tag retrieved by GUID (${tagGuid})");
 
     my $note = $evernote->getNote({
         guid => $note_guid,
@@ -51,10 +51,16 @@ my ($tag_guid, $note_guid);
 
     # only set one...check that
     my $firstTagGuid = $$tagGuids[0];
-    is($firstTagGuid, $tag_guid, "Tag successfully attached to note");
+    is($firstTagGuid, $tagGuid, "Tag successfully attached to note");
+
     # delete tag and note
-    $note->delete;
-    $tag->delete;
+    my $deleted_note = $note->delete;
+    my $deleted = $tag->delete;
+
+    ok(!!$deleted, "Tag deleted");
+
+   my $deleted_tag = $evernote->getTag({ guid => $tagGuid });
+   is($deleted_tag, undef, "Tag not retrieved after deletion");
 }
 
 

@@ -17,16 +17,19 @@ sub new {
         _obj        => $obj,
         _authentication_token  => $$args{_authentication_token},
         debug       => $debug,
+        _notestore  => $$args{_notestore},
     }, $class;
 }
 
-#sub notes {
-#    # TODO
-#}
+sub delete {
+    my ($self, $args) = @_;
+    my $guid = $self->guid;
 
-#sub delete {
-#    
-#}
+    my $authToken = $self->{_authentication_token};
+    my $client = $self->{_notestore};
+
+    return $client->expungeTag($authToken,$guid);
+}
 
 # the magic
 sub AUTOLOAD {

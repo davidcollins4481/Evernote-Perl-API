@@ -155,7 +155,7 @@ EOF
 
     return Net::Evernote::Note->new({
         _obj        => $client->createNote($authentication_token, $note),
-        _note_store => $self->{_notestore},
+        _notestore => $self->{_notestore},
         _authentication_token       => $authentication_token,
     });
 }
@@ -179,7 +179,7 @@ sub getNote {
 
     return Net::Evernote::Note->new({
         _obj        => $client->getNote($authentication_token, $guid, 1),
-        _note_store => $self->{_notestore},
+        _notestore => $self->{_notestore},
         _authentication_token       => $authentication_token,
     });
 }
@@ -271,7 +271,7 @@ sub createTag {
 
     return Net::Evernote::Tag->new({
         _obj        => $client->createTag($authentication_token, $tag),
-        _note_store => $self->{_notestore},
+        _notestore => $self->{_notestore},
         _authentication_token  => $authentication_token,
     }); 
 }
@@ -283,11 +283,25 @@ sub getTag {
     my $client = $self->{_notestore};
     my $authentication_token = $self->{_authentication_token};
 
-    return Net::Evernote::Tag->new({
-        _obj        => $client->getTag($authentication_token, $guid, 1),
-        _note_store => $self->{_notestore},
-        _authentication_token       => $authentication_token,
-    }); 
+    my $tag;
+
+    eval {
+        $tag = Net::Evernote::Tag->new({
+            _obj        => $client->getTag($authentication_token, $guid, 1),
+            _notestore => $self->{_notestore},
+            _authentication_token       => $authentication_token,
+        });
+    };
+
+    if (my $error = $@) {
+        # tag not found
+        if (ref($error) eq 'EDAMNotFoundException') {
+            return;
+        }
+    }
+
+    return $tag;
+
 }
 
 sub deleteTag {
@@ -296,6 +310,7 @@ sub deleteTag {
 
     # FIXME: IS THIS EVEN POSSIBLE?
     # I don't see any code for this yet in EDAMNoteStore::NoteStore.pm
+
 }
 
 1;

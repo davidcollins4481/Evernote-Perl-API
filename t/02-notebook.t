@@ -53,7 +53,7 @@ my $notebookGuid;
 
     # try to get the notebook again
     my $deleted_notebook = $evernote->getNotebook({ guid => $notebookGuid });
-    is($deleted_notebook, undef, "Notebook deleted");
+    is($deleted_notebook, undef, "Notebook not retrieved after deletion");
 }
 
 
