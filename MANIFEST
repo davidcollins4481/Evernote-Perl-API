@@ -13,6 +13,8 @@ lib/Net/EDAMUserStore/Types.pm
 lib/Net/EDAMUserStore/UserStore.pm
 lib/Net/Evernote/Note.pm
 lib/Net/Evernote.pm
+lib/Net/Notebook.pm
+lib/Net/Tag.pm
 lib/Net/Thrift/BinaryProtocol.pm
 lib/Net/Thrift/BufferedTransport.pm
 lib/Net/Thrift/FramedTransport.pm
@@ -24,8 +26,11 @@ lib/Net/Thrift/Socket.pm
 lib/Net/Thrift/Transport.pm
 lib/Net/Thrift.pm
 Makefile.PL
-MANIFEST			This list of files
+MANIFEST
 README
 t/00-authentication.t
-t/01-write_note.t
+t/01-note.t
+t/02-notebook.t
+t/03-tag.t
+t/Common.pm
 t/manifest.t
