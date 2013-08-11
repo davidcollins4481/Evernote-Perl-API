@@ -173,183 +173,6 @@ sub write {
   return $xfer;
 }
 
-package EDAMNoteStore::NoteStore_getSyncStateWithMetrics_args;
-use base qw(Class::Accessor);
-EDAMNoteStore::NoteStore_getSyncStateWithMetrics_args->mk_accessors( qw( authenticationToken clientMetrics ) );
-
-sub new {
-  my $classname = shift;
-  my $self      = {};
-  my $vals      = shift || {};
-  $self->{authenticationToken} = undef;
-  $self->{clientMetrics} = undef;
-  if (UNIVERSAL::isa($vals,'HASH')) {
-    if (defined $vals->{authenticationToken}) {
-      $self->{authenticationToken} = $vals->{authenticationToken};
-    }
-    if (defined $vals->{clientMetrics}) {
-      $self->{clientMetrics} = $vals->{clientMetrics};
-    }
-  }
-  return bless ($self, $classname);
-}
-
-sub getName {
-  return 'NoteStore_getSyncStateWithMetrics_args';
-}
-
-sub read {
-  my ($self, $input) = @_;
-  my $xfer  = 0;
-  my $fname;
-  my $ftype = 0;
-  my $fid   = 0;
-  $xfer += $input->readStructBegin(\$fname);
-  while (1) 
-  {
-    $xfer += $input->readFieldBegin(\$fname, \$ftype, \$fid);
-    if ($ftype == TType::STOP) {
-      last;
-    }
-    SWITCH: for($fid)
-    {
-      /^1$/ && do{      if ($ftype == TType::STRING) {
-        $xfer += $input->readString(\$self->{authenticationToken});
-      } else {
-        $xfer += $input->skip($ftype);
-      }
-      last; };
-      /^2$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{clientMetrics} = new EDAMNoteStore::ClientUsageMetrics();
-        $xfer += $self->{clientMetrics}->read($input);
-      } else {
-        $xfer += $input->skip($ftype);
-      }
-      last; };
-        $xfer += $input->skip($ftype);
-    }
-    $xfer += $input->readFieldEnd();
-  }
-  $xfer += $input->readStructEnd();
-  return $xfer;
-}
-
-sub write {
-  my ($self, $output) = @_;
-  my $xfer   = 0;
-  $xfer += $output->writeStructBegin('NoteStore_getSyncStateWithMetrics_args');
-  if (defined $self->{authenticationToken}) {
-    $xfer += $output->writeFieldBegin('authenticationToken', TType::STRING, 1);
-    $xfer += $output->writeString($self->{authenticationToken});
-    $xfer += $output->writeFieldEnd();
-  }
-  if (defined $self->{clientMetrics}) {
-    $xfer += $output->writeFieldBegin('clientMetrics', TType::STRUCT, 2);
-    $xfer += $self->{clientMetrics}->write($output);
-    $xfer += $output->writeFieldEnd();
-  }
-  $xfer += $output->writeFieldStop();
-  $xfer += $output->writeStructEnd();
-  return $xfer;
-}
-
-package EDAMNoteStore::NoteStore_getSyncStateWithMetrics_result;
-use base qw(Class::Accessor);
-EDAMNoteStore::NoteStore_getSyncStateWithMetrics_result->mk_accessors( qw( success ) );
-
-sub new {
-  my $classname = shift;
-  my $self      = {};
-  my $vals      = shift || {};
-  $self->{success} = undef;
-  $self->{userException} = undef;
-  $self->{systemException} = undef;
-  if (UNIVERSAL::isa($vals,'HASH')) {
-    if (defined $vals->{success}) {
-      $self->{success} = $vals->{success};
-    }
-    if (defined $vals->{userException}) {
-      $self->{userException} = $vals->{userException};
-    }
-    if (defined $vals->{systemException}) {
-      $self->{systemException} = $vals->{systemException};
-    }
-  }
-  return bless ($self, $classname);
-}
-
-sub getName {
-  return 'NoteStore_getSyncStateWithMetrics_result';
-}
-
-sub read {
-  my ($self, $input) = @_;
-  my $xfer  = 0;
-  my $fname;
-  my $ftype = 0;
-  my $fid   = 0;
-  $xfer += $input->readStructBegin(\$fname);
-  while (1) 
-  {
-    $xfer += $input->readFieldBegin(\$fname, \$ftype, \$fid);
-    if ($ftype == TType::STOP) {
-      last;
-    }
-    SWITCH: for($fid)
-    {
-      /^0$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{success} = new EDAMNoteStore::SyncState();
-        $xfer += $self->{success}->read($input);
-      } else {
-        $xfer += $input->skip($ftype);
-      }
-      last; };
-      /^1$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{userException} = new EDAMErrors::EDAMUserException();
-        $xfer += $self->{userException}->read($input);
-      } else {
-        $xfer += $input->skip($ftype);
-      }
-      last; };
-      /^2$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{systemException} = new EDAMErrors::EDAMSystemException();
-        $xfer += $self->{systemException}->read($input);
-      } else {
-        $xfer += $input->skip($ftype);
-      }
-      last; };
-        $xfer += $input->skip($ftype);
-    }
-    $xfer += $input->readFieldEnd();
-  }
-  $xfer += $input->readStructEnd();
-  return $xfer;
-}
-
-sub write {
-  my ($self, $output) = @_;
-  my $xfer   = 0;
-  $xfer += $output->writeStructBegin('NoteStore_getSyncStateWithMetrics_result');
-  if (defined $self->{success}) {
-    $xfer += $output->writeFieldBegin('success', TType::STRUCT, 0);
-    $xfer += $self->{success}->write($output);
-    $xfer += $output->writeFieldEnd();
-  }
-  if (defined $self->{userException}) {
-    $xfer += $output->writeFieldBegin('userException', TType::STRUCT, 1);
-    $xfer += $self->{userException}->write($output);
-    $xfer += $output->writeFieldEnd();
-  }
-  if (defined $self->{systemException}) {
-    $xfer += $output->writeFieldBegin('systemException', TType::STRUCT, 2);
-    $xfer += $self->{systemException}->write($output);
-    $xfer += $output->writeFieldEnd();
-  }
-  $xfer += $output->writeFieldStop();
-  $xfer += $output->writeStructEnd();
-  return $xfer;
-}
-
 package EDAMNoteStore::NoteStore_getSyncChunk_args;
 use base qw(Class::Accessor);
 EDAMNoteStore::NoteStore_getSyncChunk_args->mk_accessors( qw( authenticationToken afterUSN maxEntries fullSyncOnly ) );
@@ -5627,7 +5450,7 @@ sub read {
     SWITCH: for($fid)
     {
       /^0$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{success} = EDAMTypes::Note->new;
+        $self->{success} = new EDAMTypes::Note();
         $xfer += $self->{success}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -7378,7 +7201,7 @@ sub read {
       }
       last; };
       /^2$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{note} = EDAMTypes::Note->new;
+        $self->{note} = new EDAMTypes::Note();
         $xfer += $self->{note}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -7460,7 +7283,7 @@ sub read {
     SWITCH: for($fid)
     {
       /^0$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{success} = EDAMTypes::Note->new;
+        $self->{success} = new EDAMTypes::Note();
         $xfer += $self->{success}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -7571,7 +7394,7 @@ sub read {
       }
       last; };
       /^2$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{note} = EDAMTypes::Note->new;
+        $self->{note} = new EDAMTypes::Note();
         $xfer += $self->{note}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -7653,7 +7476,7 @@ sub read {
     SWITCH: for($fid)
     {
       /^0$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{success} = EDAMTypes::Note->new;
+        $self->{success} = new EDAMTypes::Note();
         $xfer += $self->{success}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -8614,7 +8437,7 @@ sub read {
     SWITCH: for($fid)
     {
       /^0$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{success} = EDAMTypes::Note->new;
+        $self->{success} = new EDAMTypes::Note();
         $xfer += $self->{success}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -9079,7 +8902,7 @@ sub read {
     SWITCH: for($fid)
     {
       /^0$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{success} = EDAMTypes::Note->new;
+        $self->{success} = new EDAMTypes::Note();
         $xfer += $self->{success}->read($input);
       } else {
         $xfer += $input->skip($ftype);
@@ -14876,14 +14699,6 @@ sub getSyncState{
   die 'implement interface';
 }
 
-sub getSyncStateWithMetrics{
-  my $self = shift;
-  my $authenticationToken = shift;
-  my $clientMetrics = shift;
-
-  die 'implement interface';
-}
-
 sub getSyncChunk{
   my $self = shift;
   my $authenticationToken = shift;
@@ -15519,14 +15334,6 @@ sub getSyncState{
 
   my $authenticationToken = ($request->{'authenticationToken'}) ? $request->{'authenticationToken'} : undef;
   return $self->{impl}->getSyncState($authenticationToken);
-}
-
-sub getSyncStateWithMetrics{
-  my ($self, $request) = @_;
-
-  my $authenticationToken = ($request->{'authenticationToken'}) ? $request->{'authenticationToken'} : undef;
-  my $clientMetrics = ($request->{'clientMetrics'}) ? $request->{'clientMetrics'} : undef;
-  return $self->{impl}->getSyncStateWithMetrics($authenticationToken, $clientMetrics);
 }
 
 sub getSyncChunk{
@@ -16208,58 +16015,6 @@ sub recv_getSyncState{
     die $result->{systemException};
   }
   die "getSyncState failed: unknown result";
-}
-sub getSyncStateWithMetrics{
-  my $self = shift;
-  my $authenticationToken = shift;
-  my $clientMetrics = shift;
-
-    $self->send_getSyncStateWithMetrics($authenticationToken, $clientMetrics);
-  return $self->recv_getSyncStateWithMetrics();
-}
-
-sub send_getSyncStateWithMetrics{
-  my $self = shift;
-  my $authenticationToken = shift;
-  my $clientMetrics = shift;
-
-  $self->{output}->writeMessageBegin('getSyncStateWithMetrics', TMessageType::CALL, $self->{seqid});
-  my $args = new EDAMNoteStore::NoteStore_getSyncStateWithMetrics_args();
-  $args->{authenticationToken} = $authenticationToken;
-  $args->{clientMetrics} = $clientMetrics;
-  $args->write($self->{output});
-  $self->{output}->writeMessageEnd();
-  $self->{output}->getTransport()->flush();
-}
-
-sub recv_getSyncStateWithMetrics{
-  my $self = shift;
-
-  my $rseqid = 0;
-  my $fname;
-  my $mtype = 0;
-
-  $self->{input}->readMessageBegin(\$fname, \$mtype, \$rseqid);
-  if ($mtype == TMessageType::EXCEPTION) {
-    my $x = new TApplicationException();
-    $x->read($self->{input});
-    $self->{input}->readMessageEnd();
-    die $x;
-  }
-  my $result = new EDAMNoteStore::NoteStore_getSyncStateWithMetrics_result();
-  $result->read($self->{input});
-  $self->{input}->readMessageEnd();
-
-  if (defined $result->{success} ) {
-    return $result->{success};
-  }
-  if (defined $result->{userException}) {
-    die $result->{userException};
-  }
-  if (defined $result->{systemException}) {
-    die $result->{systemException};
-  }
-  die "getSyncStateWithMetrics failed: unknown result";
 }
 sub getSyncChunk{
   my $self = shift;
@@ -20378,25 +20133,6 @@ sub process_getSyncState {
       $result->{systemException} = $@;
     }
     $output->writeMessageBegin('getSyncState', TMessageType::REPLY, $seqid);
-    $result->write($output);
-    $output->writeMessageEnd();
-    $output->getTransport()->flush();
-}
-
-sub process_getSyncStateWithMetrics {
-    my ($self, $seqid, $input, $output) = @_;
-    my $args = new EDAMNoteStore::NoteStore_getSyncStateWithMetrics_args();
-    $args->read($input);
-    $input->readMessageEnd();
-    my $result = new EDAMNoteStore::NoteStore_getSyncStateWithMetrics_result();
-    eval {
-      $result->{success} = $self->{handler}->getSyncStateWithMetrics($args->authenticationToken, $args->clientMetrics);
-    }; if( UNIVERSAL::isa($@,'EDAMErrors::EDAMUserException') ){ 
-      $result->{userException} = $@;
-        }; if( UNIVERSAL::isa($@,'EDAMErrors::EDAMSystemException') ){ 
-      $result->{systemException} = $@;
-    }
-    $output->writeMessageBegin('getSyncStateWithMetrics', TMessageType::REPLY, $seqid);
     $result->write($output);
     $output->writeMessageEnd();
     $output->getTransport()->flush();

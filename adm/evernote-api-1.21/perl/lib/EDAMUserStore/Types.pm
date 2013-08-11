@@ -138,7 +138,7 @@ sub write {
 
 package EDAMUserStore::PremiumInfo;
 use base qw(Class::Accessor);
-EDAMUserStore::PremiumInfo->mk_accessors( qw( currentTime premium premiumRecurring premiumExpirationDate premiumExtendable premiumPending premiumCancellationPending canPurchaseUploadAllowance sponsoredGroupName sponsoredGroupRole businessName businessAdmin ) );
+EDAMUserStore::PremiumInfo->mk_accessors( qw( currentTime premium premiumRecurring premiumExpirationDate premiumExtendable premiumPending premiumCancellationPending canPurchaseUploadAllowance sponsoredGroupName sponsoredGroupRole ) );
 
 sub new {
   my $classname = shift;
@@ -154,8 +154,6 @@ sub new {
   $self->{canPurchaseUploadAllowance} = undef;
   $self->{sponsoredGroupName} = undef;
   $self->{sponsoredGroupRole} = undef;
-  $self->{businessName} = undef;
-  $self->{businessAdmin} = undef;
   if (UNIVERSAL::isa($vals,'HASH')) {
     if (defined $vals->{currentTime}) {
       $self->{currentTime} = $vals->{currentTime};
@@ -186,12 +184,6 @@ sub new {
     }
     if (defined $vals->{sponsoredGroupRole}) {
       $self->{sponsoredGroupRole} = $vals->{sponsoredGroupRole};
-    }
-    if (defined $vals->{businessName}) {
-      $self->{businessName} = $vals->{businessName};
-    }
-    if (defined $vals->{businessAdmin}) {
-      $self->{businessAdmin} = $vals->{businessAdmin};
     }
   }
   return bless ($self, $classname);
@@ -276,18 +268,6 @@ sub read {
         $xfer += $input->skip($ftype);
       }
       last; };
-      /^11$/ && do{      if ($ftype == TType::STRING) {
-        $xfer += $input->readString(\$self->{businessName});
-      } else {
-        $xfer += $input->skip($ftype);
-      }
-      last; };
-      /^12$/ && do{      if ($ftype == TType::BOOL) {
-        $xfer += $input->readBool(\$self->{businessAdmin});
-      } else {
-        $xfer += $input->skip($ftype);
-      }
-      last; };
         $xfer += $input->skip($ftype);
     }
     $xfer += $input->readFieldEnd();
@@ -348,16 +328,6 @@ sub write {
   if (defined $self->{sponsoredGroupRole}) {
     $xfer += $output->writeFieldBegin('sponsoredGroupRole', TType::I32, 10);
     $xfer += $output->writeI32($self->{sponsoredGroupRole});
-    $xfer += $output->writeFieldEnd();
-  }
-  if (defined $self->{businessName}) {
-    $xfer += $output->writeFieldBegin('businessName', TType::STRING, 11);
-    $xfer += $output->writeString($self->{businessName});
-    $xfer += $output->writeFieldEnd();
-  }
-  if (defined $self->{businessAdmin}) {
-    $xfer += $output->writeFieldBegin('businessAdmin', TType::BOOL, 12);
-    $xfer += $output->writeBool($self->{businessAdmin});
     $xfer += $output->writeFieldEnd();
   }
   $xfer += $output->writeFieldStop();
@@ -444,7 +414,7 @@ sub read {
       }
       last; };
       /^4$/ && do{      if ($ftype == TType::STRUCT) {
-        $self->{user} = EDAMTypes::User->new;
+        $self->{user} = new EDAMTypes::User();
         $xfer += $self->{user}->read($input);
       } else {
         $xfer += $input->skip($ftype);
