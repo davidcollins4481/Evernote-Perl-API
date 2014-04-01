@@ -1,11 +1,13 @@
 use strict;
-use warnings;
-
+no warnings 'uninitialized';
 use Test::More qw(no_plan);
 use Net::Evernote;
 use FindBin;
 
 use lib $FindBin::Bin;
+
+local $SIG{__WARN__} = sub { };
+
 use Common qw(:DEFAULT $config);
 
 my $evernote = Net::Evernote->new({
